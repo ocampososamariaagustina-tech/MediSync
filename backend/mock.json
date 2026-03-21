@@ -1,0 +1,41 @@
+{
+  "resumen_empatico": "Hola María, revisamos tu análisis y la mayoría de tus valores están en buen estado. Hay 2 valores que merecen tu atención: el azúcar en sangre y el colesterol están un poco elevados. No es urgente, pero vale la pena comentárselo a tu médico en la próxima consulta.",
+  "biomarcadores": [
+    {
+      "nombre": "Glucosa",
+      "nombre_simple": "Azúcar en sangre",
+      "valor": 118,
+      "unidad": "mg/dL",
+      "rango_minimo": 70,
+      "rango_maximo": 100,
+      "estado": "alto",
+      "explicacion_ciudadana": "El azúcar en sangre es el combustible que usa tu cuerpo. Un poco más de lo ideal significa que tu cuerpo está procesando los azúcares con algo de esfuerzo.",
+      "consejo_general": "Reducir el consumo de azúcares simples puede ayudar.",
+      "disclaimer": "Este resultado no es un diagnóstico. Consultá con tu médico."
+    },
+    {
+      "nombre": "Hemoglobina",
+      "nombre_simple": "Hemoglobina",
+      "valor": 13.2,
+      "unidad": "g/dL",
+      "rango_minimo": 12,
+      "rango_maximo": 16,
+      "estado": "normal",
+      "explicacion_ciudadana": "La hemoglobina lleva el oxígeno por tu cuerpo como un servicio de delivery. Tu valor está en perfecto estado.",
+      "consejo_general": "Mantener una dieta variada con hierro ayuda a sostener una buena hemoglobina.",
+      "disclaimer": "Este resultado no es un diagnóstico. Consultá con tu médico."
+    },
+    {
+      "nombre": "Vitamina D",
+      "nombre_simple": "Vitamina D",
+      "valor": 18,
+      "unidad": "ng/mL",
+      "rango_minimo": 30,
+      "rango_maximo": 100,
+      "estado": "bajo",
+      "explicacion_ciudadana": "La vitamina D es la vitamina del sol. Tu nivel está por debajo del rango recomendado.",
+      "consejo_general": "Exponerse al sol 20 minutos al día puede contribuir a mejorar este valor.",
+      "disclaimer": "Este resultado no es un diagnóstico. Consultá con tu médico."
+    }
+  ]
+}

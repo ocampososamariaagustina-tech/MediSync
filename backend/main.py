@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 from parser import extraer_texto_pdf
 from prompt import PROMPT_SISTEMA, construir_prompt_usuario
-
-load_dotenv()
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 
 app = FastAPI(title="MediSync API")
 
@@ -21,7 +21,7 @@ app.add_middleware(
 
 # ─── Selector de IA ───────────────────────────────────────────────
 # Cambiá IA_PROVIDER en el .env a "openai" o "claude"
-IA_PROVIDER = os.getenv("IA_PROVIDER", "openai")
+IA_PROVIDER = os.getenv("IA_PROVIDER", "gemini")
 
 
 def llamar_openai(texto_pdf: str) -> dict:
@@ -65,8 +65,9 @@ def llamar_gemini(texto_pdf: str) -> dict:
     import google.generativeai as genai
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-2.5-flash",
         system_instruction=PROMPT_SISTEMA,
     )
 

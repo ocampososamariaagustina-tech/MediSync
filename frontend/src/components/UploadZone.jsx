@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 const styles = {
   zone: {
+    display: 'block',      // ← agregar
+    width: '100%',         // ← agregar
     border: '2px dashed #1a2f6b',
     borderRadius: '16px',
     padding: '48px 24px',
@@ -181,7 +183,7 @@ export default function UploadZone({ onResultado }) {
                   width: '20px', height: '20px',
                   borderRadius: '50%',
                   background: i < pasoActual
-                    ? '#1D9E75'
+                    ? '#6eadca'
                     : i === pasoActual
                       ? '#1a2f6b'
                       : '#e0e6f0',

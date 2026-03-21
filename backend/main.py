@@ -38,7 +38,7 @@ def llamar_gemini(texto_pdf: str) -> dict:
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
+        model_name="gemini-2.5-flash",
         system_instruction=PROMPT_SISTEMA,
     )
 

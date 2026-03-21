@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const styles = {
   zone: {
-    border: '2px dashed #2a1d9e',
+    border: '2px dashed #1a2f6b',
     borderRadius: '16px',
     padding: '48px 24px',
     textAlign: 'center',
@@ -12,26 +12,26 @@ const styles = {
     marginBottom: '16px',
   },
   zoneHover: {
-    background: '#E1F5EE',
-    borderColor: '#180f6e',
+    background: '#e8ecf5',
+    borderColor: '#0f1f4a',
   },
   icon: {
     fontSize: '40px',
     marginBottom: '12px',
   },
   title: {
-    fontSize: '28px',
+    fontSize: '16px',
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: '#1a1a2e',
     marginBottom: '6px',
   },
   sub: {
-    fontSize: '15px',
-    color: '#575454',
+    fontSize: '13px',
+    color: '#888',
     marginBottom: '20px',
   },
   btn: {
-    background: '#1a1c8a',
+    background: '#1a2f6b',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
@@ -39,64 +39,42 @@ const styles = {
     fontSize: '14px',
     fontWeight: '600',
     cursor: 'pointer',
-  },
-  btnLoading: {
-    background: '#a8a5a5',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '10px 24px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'not-allowed',
+    width: '100%',
+    marginTop: '8px',
   },
   fileName: {
     fontSize: '13px',
-    color: '#0f386e',
+    color: '#1a2f6b',
     marginTop: '10px',
     fontWeight: '500',
   },
-  steps: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    margin: '16px 0',
-  },
-  step: {
-    fontSize: '13px',
-    color: '#1d1f9e',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    justifyContent: 'center',
-  }
 }
 
 const PASOS = [
-  'Leyendo tu PDF...',
+  'Leyendo tu análisis...',
   'Identificando valores...',
   'Generando tu resumen...',
 ]
 
 export default function UploadZone({ onResultado }) {
-  const [hover, setHover]       = useState(false)
-  const [archivo, setArchivo]   = useState(null)
-  const [cargando, setCargando] = useState(false)
+  const [hover, setHover]         = useState(false)
+  const [archivos, setArchivos]   = useState([])
+  const [cargando, setCargando]   = useState(false)
   const [pasoActual, setPasoActual] = useState(0)
-  const [error, setError]       = useState(null)
+  const [error, setError]         = useState(null)
 
   const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   function seleccionarArchivo(e) {
-    const file = e.target.files[0]
-    if (file) {
-      setArchivo(file)
+    const files = Array.from(e.target.files)
+    if (files.length) {
+      setArchivos(files)
       setError(null)
     }
   }
 
   async function analizar() {
-    if (!archivo) return
+    if (!archivos.length) return
     setCargando(true)
     setError(null)
     setPasoActual(0)
@@ -111,18 +89,15 @@ export default function UploadZone({ onResultado }) {
 
     try {
       const formData = new FormData()
-      formData.append('archivo', archivo)
+      archivos.forEach(f => formData.append('archivos', f))
 
-      const res = await fetch(`${API}/analizar`, {
+      const res  = await fetch(`${API}/analizar`, {
         method: 'POST',
         body: formData,
       })
-
       const data = await res.json()
 
-      if (!res.ok) {
-        throw new Error(data.detail || 'Error al analizar el PDF')
-      }
+      if (!res.ok) throw new Error(data.detail || 'Error al analizar el archivo')
 
       clearInterval(intervalo)
       onResultado(data)
@@ -143,30 +118,103 @@ export default function UploadZone({ onResultado }) {
       >
         <div style={styles.icon}>📄</div>
         <div style={styles.title}>Subí tu análisis clínico</div>
-        <div style={styles.sub}>PDF o imagen — en segundos lo traducimos para vos</div>
+        <div style={styles.sub}>
+          PDF o fotos del análisis — podés subir varias hojas a la vez
+        </div>
         <input
           type="file"
-          accept=".pdf"
+          accept=".pdf,image/*"
+          multiple
           style={{ display: 'none' }}
           onChange={seleccionarArchivo}
         />
-        <div style={styles.btn}>Elegir archivo</div>
-        {archivo && (
-          <div style={styles.fileName}>📎 {archivo.name}</div>
+        <div style={{
+          background: '#1a2f6b',
+          color: '#fff',
+          borderRadius: '8px',
+          padding: '10px 24px',
+          fontSize: '14px',
+          fontWeight: '600',
+          display: 'inline-block',
+        }}>
+          Elegir archivo
+        </div>
+
+        {archivos.length > 0 && (
+          <div style={styles.fileName}>
+            📎 {archivos.length === 1
+              ? archivos[0].name
+              : `${archivos.length} archivos seleccionados`
+            }
+          </div>
         )}
       </label>
 
       {cargando && (
-        <div style={styles.steps}>
-          {PASOS.map((paso, i) => (
-            <div key={i} style={{
-              ...styles.step,
-              opacity: i <= pasoActual ? 1 : 0.3,
-              fontWeight: i === pasoActual ? '600' : '400',
-            }}>
-              {i < pasoActual ? '✓' : i === pasoActual ? '⟳' : '○'} {paso}
-            </div>
-          ))}
+        <div style={{ margin: '16px 0' }}>
+          <div style={{
+            height: '4px',
+            background: '#e0e6f0',
+            borderRadius: '2px',
+            overflow: 'hidden',
+            marginBottom: '14px',
+          }}>
+            <div style={{
+              height: '100%',
+              borderRadius: '2px',
+              background: '#1a2f6b',
+              width: pasoActual === 0 ? '20%' : pasoActual === 1 ? '60%' : '85%',
+              transition: 'width 1s ease',
+            }} />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {PASOS.map((paso, i) => (
+              <div key={i} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                opacity: i <= pasoActual ? 1 : 0.3,
+                transition: 'opacity .4s',
+              }}>
+                <div style={{
+                  width: '20px', height: '20px',
+                  borderRadius: '50%',
+                  background: i < pasoActual
+                    ? '#1D9E75'
+                    : i === pasoActual
+                      ? '#1a2f6b'
+                      : '#e0e6f0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '10px', color: '#fff', fontWeight: '700',
+                  flexShrink: 0, transition: 'background .4s',
+                }}>
+                  {i < pasoActual ? '✓' : i + 1}
+                </div>
+                <span style={{
+                  fontSize: '13px',
+                  color: i === pasoActual ? '#1a2f6b' : '#888',
+                  fontWeight: i === pasoActual ? '600' : '400',
+                  transition: 'color .4s',
+                }}>
+                  {paso}
+                </span>
+                {i === pasoActual && (
+                  <div style={{ display: 'flex', gap: '3px', marginLeft: 'auto' }}>
+                    {[0, 1, 2].map(j => (
+                      <div key={j} style={{
+                        width: '4px', height: '4px',
+                        borderRadius: '50%',
+                        background: '#1a2f6b',
+                        opacity: 0.4,
+                        animation: `pulse 1.2s ease-in-out ${j * 0.2}s infinite`,
+                      }} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -183,11 +231,8 @@ export default function UploadZone({ onResultado }) {
         </div>
       )}
 
-      {archivo && !cargando && (
-        <button
-          style={styles.btn}
-          onClick={analizar}
-        >
+      {archivos.length > 0 && !cargando && (
+        <button style={styles.btn} onClick={analizar}>
           Analizar mi estudio
         </button>
       )}

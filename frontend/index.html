@@ -10,4 +10,110 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
+  <canvas id="ecg-bg"></canvas>
+
+<style>
+  #ecg-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 140%;
+    z-index: -1;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('ecg-bg');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const DURATION = 3000;
+  const NEON = '#00ffcc';
+  const NEON_MID = '#7fffd4';
+  const NEON_CORE = '#ffffff';
+
+  function ecgY(progress) {
+    const cycles = 2;
+    const t = (progress * cycles) % 1;
+    if (t < 0.20) return 0;
+    if (t < 0.28) return -Math.sin(((t - 0.20) / 0.08) * Math.PI) * 0.12;
+    if (t < 0.34) return 0;
+    if (t < 0.37) return Math.sin(((t - 0.34) / 0.03) * Math.PI) * 0.18;
+    if (t < 0.40) return -Math.sin(((t - 0.37) / 0.03) * Math.PI) * 1.0;
+    if (t < 0.42) return Math.sin(((t - 0.40) / 0.02) * Math.PI) * 0.35;
+    if (t < 0.445) return -Math.sin(((t - 0.42) / 0.025) * Math.PI) * 0.65;
+    if (t < 0.47) return Math.sin(((t - 0.445) / 0.025) * Math.PI) * 0.22;
+    if (t < 0.52) return 0;
+    if (t < 0.58) return -Math.sin(((t - 0.52) / 0.06) * Math.PI) * 0.15;
+    if (t < 0.68) return 0;
+    if (t < 0.70) return Math.sin(((t - 0.68) / 0.02) * Math.PI) * 0.18;
+    if (t < 0.73) return -Math.sin(((t - 0.70) / 0.03) * Math.PI) * 1.0;
+    if (t < 0.75) return Math.sin(((t - 0.73) / 0.02) * Math.PI) * 0.35;
+    if (t < 0.775) return -Math.sin(((t - 0.75) / 0.025) * Math.PI) * 0.65;
+    if (t < 0.80) return Math.sin(((t - 0.775) / 0.025) * Math.PI) * 0.22;
+    if (t < 0.87) return 0;
+    if (t < 0.93) return -Math.sin(((t - 0.87) / 0.06) * Math.PI) * 0.15;
+    return 0;
+  }
+
+  function drawGlowLine(points, color, alpha, lineWidth, blur) {
+    ctx.save();
+    ctx.shadowColor = color;
+    ctx.shadowBlur = blur;
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    points.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  let startTime = null;
+  function draw(ts) {
+    if (!startTime) startTime = ts;
+    const progress = ((ts - startTime) % DURATION) / DURATION;
+    const W = canvas.width, H = canvas.height;
+    const midY = H / 2;
+    const amplitude = H * 0.28;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const drawX = Math.floor(progress * W);
+    const points = [];
+    for (let x = 0; x <= drawX; x++) {
+      points.push([x, midY + ecgY(x / W) * amplitude]);
+    }
+
+    if (points.length >= 2) {
+      drawGlowLine(points, NEON,      0.08, 18, 40);
+      drawGlowLine(points, NEON,      0.15,  8, 22);
+      drawGlowLine(points, NEON_MID,  0.35,  3.5, 10);
+      drawGlowLine(points, NEON_CORE, 0.85,  1.2,  4);
+
+      const [hx, hy] = points[points.length - 1];
+      ctx.save();
+      ctx.shadowColor = NEON;
+      ctx.shadowBlur = 24;
+      ctx.beginPath();
+      ctx.arc(hx, hy, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = NEON_CORE;
+      ctx.globalAlpha = 0.95;
+      ctx.fill();
+      ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+</script>
 </html>

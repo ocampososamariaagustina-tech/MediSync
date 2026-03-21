@@ -7,7 +7,7 @@ const styles = {
     width: '100%',
     border: '2px dashed #1a2f6b',
     borderRadius: '16px',
-    padding: '40px 24px',
+    padding: '15px 24px',
     textAlign: 'center',
     cursor: 'pointer',
     background: '#fff',

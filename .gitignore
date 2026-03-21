@@ -1,0 +1,15 @@
+# API keys — nunca subir
+.env
+
+# Entorno virtual de Python
+venv/
+__pycache__/
+*.pyc
+
+# Archivos del sistema Windows/Mac
+.DS_Store
+Thumbs.db
+
+# Node modules del frontend
+node_modules/
+

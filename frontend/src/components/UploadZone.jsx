@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const styles = {
   zone: {
-    border: '2px dashed #1D9E75',
+    border: '2px dashed #2a1d9e',
     borderRadius: '16px',
     padding: '48px 24px',
     textAlign: 'center',
@@ -13,25 +13,25 @@ const styles = {
   },
   zoneHover: {
     background: '#E1F5EE',
-    borderColor: '#0f6e56',
+    borderColor: '#180f6e',
   },
   icon: {
     fontSize: '40px',
     marginBottom: '12px',
   },
   title: {
-    fontSize: '16px',
+    fontSize: '28px',
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: '6px',
   },
   sub: {
-    fontSize: '13px',
-    color: '#888',
+    fontSize: '15px',
+    color: '#575454',
     marginBottom: '20px',
   },
   btn: {
-    background: '#1D9E75',
+    background: '#1a1c8a',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
@@ -41,7 +41,7 @@ const styles = {
     cursor: 'pointer',
   },
   btnLoading: {
-    background: '#aaa',
+    background: '#a8a5a5',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
@@ -52,7 +52,7 @@ const styles = {
   },
   fileName: {
     fontSize: '13px',
-    color: '#0f6e56',
+    color: '#0f386e',
     marginTop: '10px',
     fontWeight: '500',
   },
@@ -64,7 +64,7 @@ const styles = {
   },
   step: {
     fontSize: '13px',
-    color: '#1D9E75',
+    color: '#1d1f9e',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',

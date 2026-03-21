@@ -1,37 +1,31 @@
 import { useState } from 'react'
+import AvisoPrivacidad from './AvisoPrivacidad'
 
 const styles = {
   zone: {
-    display: 'block',      // ← agregar
-    width: '100%',         // ← agregar
+    display: 'block',
+    width: '100%',
     border: '2px dashed #1a2f6b',
     borderRadius: '16px',
-    padding: '48px 24px',
+    padding: '40px 24px',
     textAlign: 'center',
     cursor: 'pointer',
     background: '#fff',
     transition: 'all 0.2s',
-    marginBottom: '16px',
+    marginBottom: '12px',
   },
   zoneHover: {
     background: '#e8ecf5',
     borderColor: '#0f1f4a',
   },
-  icon: {
-    fontSize: '40px',
-    marginBottom: '12px',
+  zoneDisabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+    borderColor: '#ccc',
   },
-  title: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#1a1a2e',
-    marginBottom: '6px',
-  },
-  sub: {
-    fontSize: '13px',
-    color: '#888',
-    marginBottom: '20px',
-  },
+  icon: { fontSize: '36px', marginBottom: '10px' },
+  title: { fontSize: '15px', fontWeight: '600', color: '#1a1a2e', marginBottom: '6px' },
+  sub: { fontSize: '13px', color: '#888', marginBottom: '18px' },
   btn: {
     background: '#1a2f6b',
     color: '#fff',
@@ -40,15 +34,35 @@ const styles = {
     padding: '10px 24px',
     fontSize: '14px',
     fontWeight: '600',
-    cursor: 'pointer',
-    width: '100%',
-    marginTop: '8px',
+    display: 'inline-block',
+  },
+  btnDisabled: {
+    background: '#ccc',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '10px 24px',
+    fontSize: '14px',
+    fontWeight: '600',
+    display: 'inline-block',
   },
   fileName: {
     fontSize: '13px',
     color: '#1a2f6b',
     marginTop: '10px',
     fontWeight: '500',
+  },
+  btnAnalizar: {
+    width: '100%',
+    background: '#1a2f6b',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '11px',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    marginTop: '8px',
   },
 }
 
@@ -59,15 +73,17 @@ const PASOS = [
 ]
 
 export default function UploadZone({ onResultado }) {
-  const [hover, setHover]         = useState(false)
-  const [archivos, setArchivos]   = useState([])
-  const [cargando, setCargando]   = useState(false)
+  const [hover, setHover]           = useState(false)
+  const [archivos, setArchivos]     = useState([])
+  const [cargando, setCargando]     = useState(false)
   const [pasoActual, setPasoActual] = useState(0)
-  const [error, setError]         = useState(null)
+  const [error, setError]           = useState(null)
+  const [aceptado, setAceptado]     = useState(false)
 
   const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   function seleccionarArchivo(e) {
+    if (!aceptado) return
     const files = Array.from(e.target.files)
     if (files.length) {
       setArchivos(files)
@@ -75,8 +91,14 @@ export default function UploadZone({ onResultado }) {
     }
   }
 
+  function handleCancelar() {
+    setAceptado(false)
+    setArchivos([])
+    setError(null)
+  }
+
   async function analizar() {
-    if (!archivos.length) return
+    if (!archivos.length || !aceptado) return
     setCargando(true)
     setError(null)
     setPasoActual(0)
@@ -113,8 +135,13 @@ export default function UploadZone({ onResultado }) {
 
   return (
     <div>
+      {/* Zona de carga */}
       <label
-        style={{ ...styles.zone, ...(hover ? styles.zoneHover : {}) }}
+        style={{
+          ...styles.zone,
+          ...(hover && aceptado ? styles.zoneHover : {}),
+          ...(!aceptado ? styles.zoneDisabled : {}),
+        }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
@@ -129,16 +156,9 @@ export default function UploadZone({ onResultado }) {
           multiple
           style={{ display: 'none' }}
           onChange={seleccionarArchivo}
+          disabled={!aceptado}
         />
-        <div style={{
-          background: '#1a2f6b',
-          color: '#fff',
-          borderRadius: '8px',
-          padding: '10px 24px',
-          fontSize: '14px',
-          fontWeight: '600',
-          display: 'inline-block',
-        }}>
+        <div style={aceptado ? styles.btn : styles.btnDisabled}>
           Elegir archivo
         </div>
 
@@ -152,19 +172,22 @@ export default function UploadZone({ onResultado }) {
         )}
       </label>
 
+      {/* Aviso de privacidad */}
+      <AvisoPrivacidad
+        aceptado={aceptado}
+        onAceptar={() => setAceptado(true)}
+        onCancelar={handleCancelar}
+      />
+
+      {/* Animación de carga */}
       {cargando && (
         <div style={{ margin: '16px 0' }}>
           <div style={{
-            height: '4px',
-            background: '#e0e6f0',
-            borderRadius: '2px',
-            overflow: 'hidden',
-            marginBottom: '14px',
+            height: '4px', background: '#e0e6f0',
+            borderRadius: '2px', overflow: 'hidden', marginBottom: '14px',
           }}>
             <div style={{
-              height: '100%',
-              borderRadius: '2px',
-              background: '#1a2f6b',
+              height: '100%', borderRadius: '2px', background: '#1a2f6b',
               width: pasoActual === 0 ? '20%' : pasoActual === 1 ? '60%' : '85%',
               transition: 'width 1s ease',
             }} />
@@ -173,20 +196,13 @@ export default function UploadZone({ onResultado }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {PASOS.map((paso, i) => (
               <div key={i} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
+                display: 'flex', alignItems: 'center', gap: '10px',
                 opacity: i <= pasoActual ? 1 : 0.3,
                 transition: 'opacity .4s',
               }}>
                 <div style={{
-                  width: '20px', height: '20px',
-                  borderRadius: '50%',
-                  background: i < pasoActual
-                    ? '#6eadca'
-                    : i === pasoActual
-                      ? '#1a2f6b'
-                      : '#e0e6f0',
+                  width: '20px', height: '20px', borderRadius: '50%',
+                  background: i < pasoActual ? '#1D9E75' : i === pasoActual ? '#1a2f6b' : '#e0e6f0',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '10px', color: '#fff', fontWeight: '700',
                   flexShrink: 0, transition: 'background .4s',
@@ -205,10 +221,8 @@ export default function UploadZone({ onResultado }) {
                   <div style={{ display: 'flex', gap: '3px', marginLeft: 'auto' }}>
                     {[0, 1, 2].map(j => (
                       <div key={j} style={{
-                        width: '4px', height: '4px',
-                        borderRadius: '50%',
-                        background: '#1a2f6b',
-                        opacity: 0.4,
+                        width: '4px', height: '4px', borderRadius: '50%',
+                        background: '#1a2f6b', opacity: 0.4,
                         animation: `pulse 1.2s ease-in-out ${j * 0.2}s infinite`,
                       }} />
                     ))}
@@ -220,21 +234,20 @@ export default function UploadZone({ onResultado }) {
         </div>
       )}
 
+      {/* Error */}
       {error && (
         <div style={{
-          background: '#FCEBEB',
-          color: '#A32D2D',
-          borderRadius: '8px',
-          padding: '10px 14px',
-          fontSize: '13px',
-          marginBottom: '12px',
+          background: '#FCEBEB', color: '#A32D2D',
+          borderRadius: '8px', padding: '10px 14px',
+          fontSize: '13px', marginBottom: '12px',
         }}>
           {error}
         </div>
       )}
 
-      {archivos.length > 0 && !cargando && (
-        <button style={styles.btn} onClick={analizar}>
+      {/* Botón analizar */}
+      {archivos.length > 0 && !cargando && aceptado && (
+        <button style={styles.btnAnalizar} onClick={analizar}>
           Analizar mi estudio
         </button>
       )}

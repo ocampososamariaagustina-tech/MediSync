@@ -164,15 +164,6 @@ MediSync está diseñado con límites éticos estrictos:
 
 ---
 
-## Fuentes de los consejos de salud
-
-Todos los consejos del carrusel provienen del **Ministerio de Salud de la Nación Argentina**:
-
-- [Alimentación saludable](https://www.argentina.gob.ar/salud/alimentacion-saludable)
-- [Actividad física](https://www.argentina.gob.ar/salud/actividad-fisica)
-
----
-
 ## Equipo
 
 Desarrollado para hackathon por el equipo **MediSync Salta** 🏔️
@@ -183,6 +174,6 @@ Desarrollado para hackathon por el equipo **MediSync Salta** 🏔️
 
 <img src="frontend/src/assets/medisync-favicon.svg" width="40" alt="MediSync icon"/>
 
-*MediSync — Entiende tu salud, tomá el control.*
+*MediSync — Entiende tu salud.*
 
 </div>

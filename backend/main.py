@@ -20,7 +20,7 @@ load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 
 # ─── Configuración desde variables de entorno ─────────────────────
 # Todas estas se configuran en Railway — nunca hardcodeadas en el código
-IA_PROVIDER    = os.getenv("IA_PROVIDER", "gemini")       # qué IA usar
+IA_PROVIDER    = os.getenv("IA_PROVIDER", "claude")       # qué IA usar
 FRONTEND_URL   = os.getenv("FRONTEND_URL", "*")           # URL de Vercel para CORS
 MAX_SIZE_MB    = int(os.getenv("MAX_SIZE_MB", "10"))       # límite de tamaño en MB
 MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024                 # convertido a bytes

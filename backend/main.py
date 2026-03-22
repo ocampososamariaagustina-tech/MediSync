@@ -297,3 +297,7 @@ def mock():
             return json.load(f)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="mock.json no encontrado.")
+    
+@app.get("/ping")
+def ping():
+    return {"pong": True}

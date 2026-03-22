@@ -2,6 +2,11 @@ import { useState } from 'react'
 import UploadZone from './components/UploadZone'
 import Resultados from './components/Resultados'
 
+// Mantener el backend despierto haciendo ping cada 4 minutos
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+setInterval(() => {
+  fetch(`${API}/ping`).catch(() => {})
+}, 4 * 60 * 1000)
 // Animación riseIn: cada elemento entra con delay escalonado
 // El keyframe está definido en index.css
 const anim = (delay) => ({

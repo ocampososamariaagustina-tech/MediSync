@@ -156,7 +156,7 @@ def llamar_openai(texto_pdf: str) -> dict:
 def llamar_claude(texto_pdf: str) -> dict:
     """Llama a Claude como alternativa a Gemini."""
     import anthropic
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    client = anthropic.Anthropic(api_key=os.getenv("CLAUDE_API_KEY"))
     respuesta = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=4096,

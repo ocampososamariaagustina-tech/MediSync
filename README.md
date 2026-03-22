@@ -174,6 +174,6 @@ Desarrollado para hackathon por el equipo **MediSync Salta** 🏔️
 
 <img src="frontend/src/assets/medisync-favicon.svg" width="40" alt="MediSync icon"/>
 
-*MediSync — Entiende tu salud.*
+*MediSync — Understand your health*
 
 </div>

@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="frontend/src/assets/icon.svg" width="80" alt="MediSync logo"/>
-
 <img src="frontend/src/assets/vite.svg" width="320" alt="MediSync banner"/>
 
 **Porque los datos de tu cuerpo no deberían ser un secreto para ti.**
